@@ -22,13 +22,15 @@ export default function Home() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:8000/search", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ question: q }),
-      });
+      const res = await fetch("https://backend-922244788351.us-central1.run.app/search",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ question: q }),
+        }
+      );
 
       const data = await res.json();
       setResults(data.results || []);
