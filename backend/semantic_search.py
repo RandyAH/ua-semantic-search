@@ -7,11 +7,18 @@ df = pd.read_excel("ua_resources_filled.xlsx")
 
 # Load model
 print("Loading model...")
-model = SentenceTransformer("all-MiniLM-L6-v2", device="cpu")
+
+model = None
+
+def get_model():
+    global model
+    if model is None:
+        model = SentenceTransformer("all-MiniLM-L6-v2")
+    return model
 
 # Create embeddings
 print("Generating embeddings...")
-embeddings = model.encode(df["search_text"].tolist(), show_progress_bar=True)
+embeddings = np.load("embeddings.npy")
 
 def expand_query(query):
     query = query.lower()

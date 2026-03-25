@@ -1,9 +1,0 @@
-fastapi
-uvicorn
-pandas
-numpy
-sentence-transformers
-torch
-scikit-learn
-tqdm
-openpyxl>=3.1.0
