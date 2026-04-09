@@ -64,7 +64,7 @@ The system follows a simple but scalable pipeline:
 **Backend:** FastAPI, Python  
 **ML / Data:** SentenceTransformers, NumPy, Pandas  
 **Deployment:** Docker, Google Cloud Run  
-**Frontend:** Next.js (separate repo)  
+**Frontend:** Next.js  
 
 ---
 
