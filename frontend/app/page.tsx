@@ -9,6 +9,11 @@ type Result = {
   score: number;
 };
 
+/** Override with NEXT_PUBLIC_API_URL (e.g. http://localhost:8080 for local API). */
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL ??
+  "https://backend-922244788351.us-central1.run.app";
+
 export default function Home() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Result[]>([]);
@@ -22,7 +27,7 @@ export default function Home() {
     setLoading(true);
 
     try {
-      const res = await fetch("https://backend-922244788351.us-central1.run.app/search",
+      const res = await fetch(`${API_BASE.replace(/\/$/, "")}/search`,
         {
           method: "POST",
           headers: {
