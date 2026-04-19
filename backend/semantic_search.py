@@ -1,6 +1,9 @@
 """
 Semantic search over UA resources using sentence embeddings.
 Corpus embeddings are precomputed (embeddings.npy) and reused; only the query is encoded per request.
+
+Deployed Link: https://ua-semantic-search.vercel.app/
+It takes 2-5 seconds to search for a resource since a free trial version of gcloud is used.
 """
 
 from __future__ import annotations

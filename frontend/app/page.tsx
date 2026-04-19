@@ -9,10 +9,18 @@ type Result = {
   score: number;
 };
 
-/** Override with NEXT_PUBLIC_API_URL (e.g. http://localhost:8080 for local API). */
 const API_BASE =
   process.env.NEXT_PUBLIC_API_URL ??
   "https://backend-922244788351.us-central1.run.app";
+
+function Spinner({ className }: { className?: string }) {
+  return (
+    <span
+      className={`inline-block size-5 rounded-full border-2 border-neutral-500 border-t-red-400 animate-spin ${className ?? ""}`}
+      aria-hidden
+    />
+  );
+}
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -20,6 +28,7 @@ export default function Home() {
   const [recent, setRecent] = useState<string[]>([]);
   const [visited, setVisited] = useState<Result[]>([]);
   const [loading, setLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const handleSearchWithQuery = async (q: string) => {
     if (!q.trim()) return;
@@ -27,19 +36,18 @@ export default function Home() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${API_BASE.replace(/\/$/, "")}/search`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ question: q }),
-        }
-      );
+      const res = await fetch(`${API_BASE.replace(/\/$/, "")}/search`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ question: q }),
+      });
 
       const data = await res.json();
       setResults(data.results || []);
       setRecent((prev) => [q, ...prev.filter((x) => x !== q).slice(0, 9)]);
+      setHasSearched(true);
     } catch (err) {
       console.error("Error:", err);
     }
@@ -50,132 +58,188 @@ export default function Home() {
   const handleSearch = () => handleSearchWithQuery(query);
 
   return (
-    <div className="flex h-screen bg-neutral-800 text-white">
-      {/* SIDEBAR */}
-      <div className="w-72 bg-neutral-700 p-5 border-r border-neutral-800 flex flex-col">
-        {/* RECENT SEARCHES */}
-        <div>
-          <h2 className="text-lg font-bold mb-4">Recent Searches</h2>
-
-          <div className="space-y-3">
-            {recent.map((r, i) => (
-              <button
-                key={i}
-                onClick={() => {
-                  setQuery(r);
-                  handleSearchWithQuery(r);
-                }}
-                className="block w-full text-left text-sm text-gray-300 hover:text-white transition rounded-md px-2 py-2 hover:bg-neutral-600 whitespace-normal break-words"
-              >
-                {r}
-              </button>
-            ))}
-          </div>
+    <div className="flex h-screen min-h-0 overflow-hidden bg-neutral-900 text-neutral-100 antialiased">
+      {/* Sidebar */}
+      <aside className="flex h-full min-h-0 w-72 shrink-0 flex-col border-r border-neutral-800/80 bg-neutral-950/50 backdrop-blur-sm">
+        <div className="shrink-0 border-b border-neutral-800/80 px-5 py-5">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
+            History
+          </p>
+          <h2 className="mt-1 text-sm font-semibold text-neutral-200">
+            Recent searches
+          </h2>
         </div>
-
-        {/* BIG SPACING BETWEEN SECTIONS */}
-        <div className="my-8 border-t border-neutral-600" />
-
-        {/* RECENTLY OPENED */}
-        <div>
-          <h2 className="text-lg font-bold mb-4">Recently Opened</h2>
-
-          <div className="space-y-3">
-            {visited.map((v, i) => (
-              <a
-                key={i}
-                href={v.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full text-sm text-gray-300 hover:text-white transition rounded-md px-2 py-2 hover:bg-neutral-600 whitespace-normal break-words"
-              >
-                {v.name}
-              </a>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* MAIN CONTENT */}
-      <div className="flex-1 flex flex-col items-center justify-start p-10">
-        <h1 className="text-3xl font-bold mb-6">UA AI Assistant 🔍</h1>
-
-        {/* SEARCH BAR */}
-        <div className="w-full max-w-2xl flex gap-2">
-          <input
-            className="flex-1 p-4 rounded-xl bg-neutral-600 text-white border border-neutral-700 focus:outline-none text-lg"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Try: 'how do I check my grades'"
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          />
-
-          <button
-            onClick={handleSearch}
-            className="bg-red-800 px-6 rounded-xl hover:bg-red-900 transition"
-          >
-            Search
-          </button>
-        </div>
-
-        {/* LOADING */}
-        {loading && <p className="mt-4 text-neutral-400">Searching...</p>}
-
-        {/* RESULTS */}
-        {results.length > 0 && (
-          <div className="w-full max-w-2xl mt-8">
-            {/* BEST RESULT */}
-            <div className="bg-neutral-700 p-6 rounded-2xl border border-red-700 shadow-lg">
-              <p className="text-sm text-red-500 font-semibold">🔥 Best Match</p>
-              <h2 className="text-xl font-bold mt-2">{results[0].name}</h2>
-              <p className="text-neutral-400 mt-1">{results[0].description}</p>
-
-              <a
-                href={results[0].url}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => {
-                  setVisited((prev) => [
-                    results[0],
-                    ...prev.filter((v) => v.url !== results[0].url).slice(0, 5),
-                  ]);
-                }}
-                className="text-red-500 mt-3 inline-block font-semibold hover:underline"
-              >
-                Open →
-              </a>
-            </div>
-
-            {/* OTHER RESULTS */}
-            <div className="mt-6 space-y-4">
-              {results.slice(1).map((r, i) => (
-                <div
+        <div className="min-h-0 flex-1 overflow-y-auto px-3 py-4">
+          <div className="space-y-1">
+            {recent.length === 0 ? (
+              <p className="px-2 py-3 text-sm text-neutral-500">
+                Your searches appear here
+              </p>
+            ) : (
+              recent.map((r, i) => (
+                <button
                   key={i}
-                  className="bg-neutral-700 p-5 rounded-xl border border-neutral-800 hover:border-neutral-600 transition"
+                  type="button"
+                  onClick={() => {
+                    setQuery(r);
+                    handleSearchWithQuery(r);
+                  }}
+                  className="w-full rounded-lg px-3 py-2.5 text-left text-sm text-neutral-300 transition-colors duration-200 hover:bg-neutral-800/80 hover:text-white"
                 >
-                  <h2 className="font-semibold">{r.name}</h2>
-                  <p className="text-neutral-400">{r.description}</p>
-
-                  <a
-                    href={r.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => {
-                      setVisited((prev) => [
-                        r,
-                        ...prev.filter((v) => v.url !== r.url).slice(0, 5),
-                      ]);
-                    }}
-                    className="text-red-500 mt-2 inline-block text-sm hover:underline"
-                  >
-                    Open →
-                  </a>
-                </div>
-              ))}
-            </div>
+                  <span className="line-clamp-2 break-words">{r}</span>
+                </button>
+              ))
+            )}
           </div>
-        )}
-      </div>
+        </div>
+
+        <div className="shrink-0 border-t border-neutral-800/80 px-5 py-4">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
+            Links
+          </p>
+          <h2 className="mt-1 text-sm font-semibold text-neutral-200">
+            Recently opened
+          </h2>
+        </div>
+        <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-5">
+          <div className="space-y-1">
+            {visited.length === 0 ? (
+              <p className="px-2 py-3 text-sm text-neutral-500">
+                Opened resources appear here
+              </p>
+            ) : (
+              visited.map((v, i) => (
+                <a
+                  key={i}
+                  href={v.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block rounded-lg px-3 py-2.5 text-sm text-neutral-300 transition-colors duration-200 hover:bg-neutral-800/80 hover:text-white"
+                >
+                  <span className="line-clamp-2 break-words">{v.name}</span>
+                </a>
+              ))
+            )}
+          </div>
+        </div>
+      </aside>
+
+      {/* Main */}
+      <main className="flex min-h-0 flex-1 overflow-y-auto">
+        <div className="mx-auto flex min-h-full w-full max-w-2xl flex-col justify-center px-6 py-12 sm:px-10">
+          <div className="mb-10 text-center sm:mb-12">
+            <h1 className="text-4xl font-semibold tracking-tight text-white sm:text-[2.5rem]">
+              UA AI Assistant
+            </h1>
+            <p className="mt-3 text-sm text-neutral-400">
+              Search campus resources in natural language
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch sm:gap-3">
+            <div className="relative flex-1">
+              <input
+                className="w-full rounded-2xl border border-neutral-700/80 bg-neutral-800/60 px-5 py-4 text-base text-white shadow-lg shadow-black/20 outline-none ring-offset-2 ring-offset-neutral-900 transition-shadow duration-200 placeholder:text-neutral-500 focus:border-neutral-600 focus:ring-2 focus:ring-red-500/60"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder='Try: "how do I check my grades"'
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                aria-label="Search query"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={handleSearch}
+              className="shrink-0 rounded-2xl bg-red-900/85 px-8 py-4 text-sm font-semibold text-red-50 shadow-md shadow-red-950/30 transition duration-200 hover:bg-red-800 hover:shadow-lg hover:shadow-red-950/40 active:scale-[0.98]"
+            >
+              Search
+            </button>
+          </div>
+
+          <div className="mt-8 min-h-[4rem] flex flex-col items-center justify-center">
+            {loading && (
+              <div className="flex items-center gap-3 text-neutral-400">
+                <Spinner />
+                <span className="text-sm">Searching…</span>
+              </div>
+            )}
+
+            {!loading && results.length === 0 && (
+              <div className="rounded-2xl border border-dashed border-neutral-700/80 bg-neutral-800/30 px-8 py-12 text-center transition-colors duration-200">
+                <p className="text-sm text-neutral-400">
+                  {hasSearched
+                    ? "No matching resources found. Try a different phrase."
+                    : "Start by searching for a resource"}
+                </p>
+              </div>
+            )}
+
+            {!loading && results.length > 0 && (
+              <div className="w-full space-y-5">
+                {/* Best match */}
+                <div className="group relative overflow-hidden rounded-2xl border border-red-900/40 bg-neutral-800/70 p-6 shadow-lg shadow-black/25 transition duration-300 hover:scale-[1.01] hover:shadow-xl hover:shadow-black/30">
+                  <div className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-red-500/90 to-red-800/80" />
+                  <div className="pl-4">
+                    <span className="inline-flex items-center rounded-full bg-red-950/60 px-3 py-1 text-xs font-medium text-red-200 ring-1 ring-red-800/50">
+                      Best match
+                    </span>
+                    <h2 className="mt-4 text-xl font-semibold text-white">
+                      {results[0].name}
+                    </h2>
+                    <p className="mt-2 text-sm leading-relaxed text-neutral-300">
+                      {results[0].description}
+                    </p>
+                    <a
+                      href={results[0].url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => {
+                        setVisited((prev) => [
+                          results[0],
+                          ...prev.filter((v) => v.url !== results[0].url).slice(0, 5),
+                        ]);
+                      }}
+                      className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-red-400 transition hover:text-red-300"
+                    >
+                      Open resource
+                      <span aria-hidden>→</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* Other results */}
+                <div className="space-y-3">
+                  {results.slice(1).map((r, i) => (
+                    <div
+                      key={i}
+                      className="group rounded-2xl border border-neutral-700/60 bg-neutral-800/50 p-6 shadow-md shadow-black/15 transition duration-300 hover:scale-[1.01] hover:border-neutral-600 hover:shadow-lg"
+                    >
+                      <h3 className="font-semibold text-neutral-100">{r.name}</h3>
+                      <p className="mt-2 text-sm leading-relaxed text-neutral-300">
+                        {r.description}
+                      </p>
+                      <a
+                        href={r.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => {
+                          setVisited((prev) => [
+                            r,
+                            ...prev.filter((v) => v.url !== r.url).slice(0, 5),
+                          ]);
+                        }}
+                        className="mt-3 inline-flex text-sm font-medium text-red-400/90 transition hover:text-red-300"
+                      >
+                        Open resource →
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
     </div>
   );
 }

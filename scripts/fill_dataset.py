@@ -4,12 +4,12 @@ from openai import OpenAI
 from tqdm import tqdm
 import time
 import os
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Load dataset
 df = pd.read_excel("ua_resources.xlsx")
 
-# ✅ Ensure column exists FIRST
+#  Ensure column exists FIRST
 if "student_queries" not in df.columns:
     df["student_queries"] = ""
 
@@ -153,4 +153,4 @@ df["search_text"] = (
 # Save
 df.to_excel("ua_resources_filled.xlsx", index=False)
 
-print("DONE 🚀")
+print("DONE")
