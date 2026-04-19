@@ -1,8 +1,8 @@
-# 🔍 UA Semantic Search
+# UA Semantic Search
 
 A semantic search engine for University of Alabama resources that understands **user intent**, not just keywords.
 
-## 🚀 Overview
+## Overview
 
 Traditional search systems rely on exact keyword matching, which often fails when users don’t know the correct terminology.
 
