@@ -126,8 +126,8 @@ export default function Home() {
 
       {/* Main */}
       <main className="flex min-h-0 flex-1 overflow-y-auto">
-        <div className="mx-auto flex min-h-full w-full max-w-2xl flex-col justify-center px-6 py-12 sm:px-10">
-          <div className="mb-10 text-center sm:mb-12">
+        <div className="mx-auto flex w-full max-w-2xl flex-col justify-start px-6 pb-12 pt-12 sm:px-10 sm:pt-16">
+          <div className="mb-8 text-center sm:mb-10">
             <h1 className="text-4xl font-semibold tracking-tight text-white sm:text-[2.5rem]">
               UA AI Assistant
             </h1>
@@ -156,28 +156,24 @@ export default function Home() {
             </button>
           </div>
 
-          <div className="mt-8 min-h-[4rem] flex flex-col items-center justify-center">
+          <div className="mt-8 flex w-full flex-col items-stretch">
             {loading && (
-              <div className="flex items-center gap-3 text-neutral-400">
+              <div className="flex items-center justify-center gap-3 py-4 text-neutral-400">
                 <Spinner />
                 <span className="text-sm">Searching…</span>
               </div>
             )}
 
-            {!loading && results.length === 0 && (
-              <div className="rounded-2xl border border-dashed border-neutral-700/80 bg-neutral-800/30 px-8 py-12 text-center transition-colors duration-200">
-                <p className="text-sm text-neutral-400">
-                  {hasSearched
-                    ? "No matching resources found. Try a different phrase."
-                    : "Start by searching for a resource"}
-                </p>
-              </div>
+            {!loading && hasSearched && results.length === 0 && (
+              <p className="py-6 text-center text-sm text-neutral-500">
+                No matching resources found. Try a different phrase.
+              </p>
             )}
 
             {!loading && results.length > 0 && (
               <div className="w-full space-y-5">
                 {/* Best match */}
-                <div className="group relative overflow-hidden rounded-2xl border border-red-900/40 bg-neutral-800/70 p-6 shadow-lg shadow-black/25 transition duration-300 hover:scale-[1.01] hover:shadow-xl hover:shadow-black/30">
+                <div className="group relative overflow-hidden rounded-2xl border border-red-900/40 bg-neutral-800/70 p-6 shadow-lg shadow-black/25 transition-shadow duration-300 hover:shadow-xl hover:shadow-black/30">
                   <div className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-red-500/90 to-red-800/80" />
                   <div className="pl-4">
                     <span className="inline-flex items-center rounded-full bg-red-950/60 px-3 py-1 text-xs font-medium text-red-200 ring-1 ring-red-800/50">
@@ -212,7 +208,7 @@ export default function Home() {
                   {results.slice(1).map((r, i) => (
                     <div
                       key={i}
-                      className="group rounded-2xl border border-neutral-700/60 bg-neutral-800/50 p-6 shadow-md shadow-black/15 transition duration-300 hover:scale-[1.01] hover:border-neutral-600 hover:shadow-lg"
+                      className="group rounded-2xl border border-neutral-700/60 bg-neutral-800/50 p-6 shadow-md shadow-black/15 transition-shadow duration-300 hover:border-neutral-600 hover:shadow-lg"
                     >
                       <h3 className="font-semibold text-neutral-100">{r.name}</h3>
                       <p className="mt-2 text-sm leading-relaxed text-neutral-300">
