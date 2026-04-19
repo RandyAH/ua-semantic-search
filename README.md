@@ -1,79 +1,172 @@
-# UA Semantic Search System
+# 🔍 UA Semantic Search
 
-A cloud-deployed semantic search engine that enables fast, relevant retrieval of structured university resources using vector embeddings.
-
-This project demonstrates how to design and deploy a **data-driven backend system** that transforms raw data into an efficient, queryable search experience.
-
----
+A semantic search engine for University of Alabama resources that understands **user intent**, not just keywords.
 
 ## 🚀 Overview
 
-The UA Semantic Search System allows users to search across university resources using natural language queries.
+Traditional search systems rely on exact keyword matching, which often fails when users don’t know the correct terminology.
 
-Instead of keyword matching, the system uses **embedding-based similarity** to return contextually relevant results.
+This project builds a **semantic search system** that allows users to search naturally (e.g., *“I need help mentally”*) and still retrieve the most relevant university resources (e.g., Counseling Center).
 
----
-
-## 🧠 Key Features
-
-- Semantic search using transformer-based embeddings  
-- FastAPI backend for real-time query processing  
-- Precomputed embeddings for low-latency retrieval  
-- Vector similarity ranking (cosine / dot product)  
-- Cloud deployment with Docker  
-- End-to-end data pipeline from raw dataset to searchable system  
+The system uses **machine learning and natural language processing** to map both user queries and resources into vector space and return results based on meaning similarity.
 
 ---
 
-## 🏗️ System Architecture
+## 🧠 Features
 
-The system follows a simple but scalable pipeline:
-
-1. **Data Ingestion**  
-   - Structured dataset of university resources (CSV/Excel)
-
-2. **Data Enrichment**  
-   - Generated descriptions, keywords, and metadata
-
-3. **Embedding Generation**  
-   - SentenceTransformers model converts text → vector embeddings
-
-4. **Storage**  
-   - Embeddings stored as NumPy arrays for fast access
-
-5. **Query Processing**  
-   - User query → embedding → similarity search
-
-6. **Ranking & Response**  
-   - Top-k results returned via API
+* 🔎 Semantic search using sentence embeddings (MiniLM)
+* ⚡ FastAPI backend for real-time query handling
+* 🌐 Next.js frontend with clean UI
+* 📊 TF-IDF baseline model for comparison
+* 🧪 Evaluation using precision@k, recall@k, and MRR
+* 🧱 Feature engineering with weighted search fields
+* 🤖 AI-generated dataset enrichment (descriptions, queries, keywords)
 
 ---
 
-## ⚡ Performance Optimization
+## 🏗️ Architecture
 
-- Reduced query latency from ~5 seconds to <1 second  
-- Achieved via:
-  - Precomputed embeddings  
-  - Vectorized similarity computation  
-  - Lazy model loading  
-
----
-
-## 🛠️ Tech Stack
-
-**Backend:** FastAPI, Python  
-**ML / Data:** SentenceTransformers, NumPy, Pandas  
-**Deployment:** Docker, Google Cloud Run  
-**Frontend:** Next.js  
+```
+User Query
+   ↓
+Embedding Model (MiniLM)
+   ↓
+Vector Similarity (Cosine)
+   ↓
+Ranked Results
+```
 
 ---
 
-## 📦 API Example
+## 📊 Models
 
-**POST /search**
+### 1. TF-IDF (Baseline)
 
-Request:
-```json
-{
-  "query": "student health services"
-}
+* Keyword-based matching
+* Fast and interpretable
+* Limited understanding of meaning
+
+### 2. SentenceTransformer (MiniLM)
+
+* Semantic embeddings
+* Captures intent and context
+* Higher recall and better real-world performance
+
+---
+
+## 📈 Evaluation Metrics
+
+* **Precision@5** – How many of the top results are relevant
+* **Recall@5** – Whether all relevant results are retrieved
+* **MRR (Mean Reciprocal Rank)** – How early the correct result appears
+
+---
+
+## 📂 Project Structure
+
+```
+backend/
+  app.py
+  semantic_search.py
+  embeddings.npy
+  ua_resources_filled.xlsx
+
+frontend/
+  app/page.tsx
+
+scripts/
+  generate_embeddings.py
+  fill_dataset.py
+```
+
+---
+
+## ⚙️ Setup & Installation
+
+### 1. Clone the repo
+
+```
+git clone https://github.com/your-username/ua-semantic-search.git
+cd ua-semantic-search
+```
+
+---
+
+### 2. Backend setup
+
+```
+cd backend
+pip install -r requirements.txt
+python download_model.py
+```
+
+Run server:
+
+```
+uvicorn app:app --host 0.0.0.0 --port 8080
+```
+
+---
+
+### 3. Frontend setup
+
+```
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+## 🔎 Usage
+
+1. Open the frontend in your browser
+2. Enter a natural language query
+
+   * Example: *“how do I plan my classes”*
+3. View ranked results based on semantic similarity
+
+---
+
+## 🌐 Deployment
+
+* Backend: Google Cloud Run
+* Frontend: Vercel
+
+---
+
+## 🔥 Example Queries
+
+* “I need help mentally” → Counseling resources
+* “build my schedule” → Schedule Builder
+* “find a job” → Job board
+
+---
+
+## ⚠️ Limitations
+
+* Relies on AI-generated dataset fields
+* Small dataset limits generalization
+* Embedding model adds latency compared to keyword search
+
+---
+
+## 🚀 Future Improvements
+
+* Add vector database (FAISS, Pinecone, etc.)
+* Improve ranking with hybrid search (TF-IDF + embeddings)
+* Add user personalization
+* Expand dataset coverage
+
+---
+
+## 👨‍💻 Author
+
+Randy Hannah
+Computer Science Student – University of Alabama
+
+---
+
+## 📄 License
+
+This project is for educational and research purposes.
