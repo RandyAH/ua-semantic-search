@@ -160,13 +160,6 @@ npm run dev
 
 ---
 
-## Author
-
-Randy Hannah
-Computer Science Student – University of Alabama
-
----
-
 ## License
 
 This project is for educational and research purposes.
