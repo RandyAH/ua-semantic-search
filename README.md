@@ -12,7 +12,7 @@ The system uses **machine learning and natural language processing** to map both
 
 ---
 
-## 🧠 Features
+## Features
 
 * 🔎 Semantic search using sentence embeddings (MiniLM)
 * ⚡ FastAPI backend for real-time query handling
@@ -24,7 +24,7 @@ The system uses **machine learning and natural language processing** to map both
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 User Query
@@ -38,7 +38,7 @@ Ranked Results
 
 ---
 
-## 📊 Models
+## Models
 
 ### 1. TF-IDF (Baseline)
 
@@ -54,7 +54,7 @@ Ranked Results
 
 ---
 
-## 📈 Evaluation Metrics
+## Evaluation Metrics
 
 * **Precision@5** – How many of the top results are relevant
 * **Recall@5** – Whether all relevant results are retrieved
@@ -62,7 +62,7 @@ Ranked Results
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 backend/
@@ -81,7 +81,7 @@ scripts/
 
 ---
 
-## ⚙️ Setup & Installation
+## Setup & Installation
 
 ### 1. Clone the repo
 
@@ -118,7 +118,7 @@ npm run dev
 
 ---
 
-## 🔎 Usage
+## Usage
 
 1. Open the frontend in your browser
 2. Enter a natural language query
@@ -128,14 +128,14 @@ npm run dev
 
 ---
 
-## 🌐 Deployment
+## Deployment
 
 * Backend: Google Cloud Run
 * Frontend: Vercel
 
 ---
 
-## 🔥 Example Queries
+## Example Queries
 
 * “I need help mentally” → Counseling resources
 * “build my schedule” → Schedule Builder
@@ -143,7 +143,7 @@ npm run dev
 
 ---
 
-## ⚠️ Limitations
+## Limitations
 
 * Relies on AI-generated dataset fields
 * Small dataset limits generalization
@@ -151,7 +151,7 @@ npm run dev
 
 ---
 
-## 🚀 Future Improvements
+## Future Improvements
 
 * Add vector database (FAISS, Pinecone, etc.)
 * Improve ranking with hybrid search (TF-IDF + embeddings)
@@ -160,13 +160,13 @@ npm run dev
 
 ---
 
-## 👨‍💻 Author
+## Author
 
 Randy Hannah
 Computer Science Student – University of Alabama
 
 ---
 
-## 📄 License
+## License
 
 This project is for educational and research purposes.
